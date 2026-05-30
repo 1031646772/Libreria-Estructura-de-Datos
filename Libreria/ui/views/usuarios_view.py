@@ -6,9 +6,29 @@ from ui.styles import COLORS, FONTS, PADDING
 
 
 class UsuariosView(tk.Frame):
-    """Vista para registrar usuarios, listarlos y gestionar préstamos."""
+    
+    """
+        Vista encargada de la gestión de usuarios y préstamos.
+
+        Funcionalidades principales:
+        - Registrar nuevos usuarios.
+        - Visualizar los usuarios registrados.
+        - Realizar préstamos de libros.
+        - Registrar devoluciones de libros.
+        - Mostrar el listado de préstamos activos.
+
+    """
 
     def __init__(self, parent, service, **kwargs):
+        
+        """
+            Inicializa la vista de usuarios.
+
+            Parámetros:
+                parent (tk.Widget): Contenedor padre.
+                service: Servicio que contiene la lógica de negocio.
+                **kwargs: Parámetros adicionales de Tkinter.
+        """
         super().__init__(parent, bg=COLORS["bg_main"], **kwargs)
         self.service = service
         self._build()
@@ -18,6 +38,21 @@ class UsuariosView(tk.Frame):
     # ══════════════════════════════════════════════
 
     def _build(self):
+        
+        """
+            Construye la interfaz gráfica principal.
+
+            La vista se divide en dos columnas:
+
+            Columna izquierda:
+            - Formulario de registro de usuarios.
+            - Tabla de usuarios registrados.
+
+            Columna derecha:
+            - Formulario de préstamos y devoluciones.
+            - Tabla de préstamos activos.
+        """
+        
         # Contenedor de dos columnas
         wrapper = tk.Frame(self, bg=COLORS["bg_main"])
         wrapper.pack(fill="both", expand=True,
@@ -38,6 +73,18 @@ class UsuariosView(tk.Frame):
 
     # ── Formulario de usuario ────────────────────
     def _build_form_usuario(self, parent):
+        
+        """
+            Construye el formulario para registrar usuarios.
+
+            Permite capturar:
+            - Cédula.
+            - Nombre.
+            - Correo electrónico.
+
+            También incorpora controles para registrar
+            y limpiar la información ingresada.
+        """
         frame = tk.LabelFrame(
             parent, text="  👤  Ingresar Usuario  ",
             font=FONTS["subtitle"],
@@ -46,9 +93,15 @@ class UsuariosView(tk.Frame):
             padx=PADDING["card"], pady=PADDING["card"],
         )
         frame.pack(fill="x", pady=(0, 10))
+        
+        # Campos requeridos para el registro
+        # de nuevos usuarios.
 
         campos = [("Cédula *", "cedula"), ("Nombre *", "nombre"), ("Email *", "email")]
         self._u_entries = {}
+
+        # Campos requeridos para el registro
+        # de nuevos usuarios.
 
         for etiqueta, clave in campos:
             tk.Label(frame, text=etiqueta, font=FONTS["body_sm"],
@@ -62,9 +115,13 @@ class UsuariosView(tk.Frame):
             )
             entry.pack(fill="x", ipady=4, pady=(0, 6))
             self._u_entries[clave] = entry
+            
 
         btn_f = tk.Frame(frame, bg=COLORS["bg_panel"])
         btn_f.pack(fill="x", pady=(4, 0))
+        
+        # Ejecuta el proceso de registro
+        # de un nuevo usuario.
 
         tk.Button(
             btn_f, text="✔  Registrar",
@@ -74,6 +131,9 @@ class UsuariosView(tk.Frame):
             relief="flat", cursor="hand2", padx=14, pady=6,
             command=self._registrar_usuario,
         ).pack(side="left")
+
+        # Elimina el contenido de todos los campos
+        # del formulario.
 
         tk.Button(
             btn_f, text="✖  Limpiar",
@@ -91,6 +151,16 @@ class UsuariosView(tk.Frame):
 
     # ── Tabla de usuarios ────────────────────────
     def _build_tabla_usuarios(self, parent):
+        
+        """
+            Construye la tabla que muestra los usuarios registrados.
+
+            Información mostrada:
+            - Cédula.
+            - Nombre.
+            - Correo electrónico.
+            - Cantidad de préstamos activos.
+        """
         frame = tk.LabelFrame(
             parent, text="  📋  Usuarios Registrados  ",
             font=FONTS["subtitle"],
@@ -134,6 +204,18 @@ class UsuariosView(tk.Frame):
 
     # ── Formulario de préstamo ───────────────────
     def _build_form_prestamo(self, parent):
+        
+        """
+            Construye el formulario para gestionar
+            préstamos y devoluciones de libros.
+
+            Datos requeridos:
+            - Cédula del usuario.
+            - ISBN del libro.
+
+            Permite registrar préstamos y devoluciones.
+        """
+        
         frame = tk.LabelFrame(
             parent, text="  🔖  Prestar / Devolver Libro  ",
             font=FONTS["subtitle"],
@@ -189,6 +271,16 @@ class UsuariosView(tk.Frame):
 
     # ── Tabla de préstamos ───────────────────────
     def _build_tabla_prestamos(self, parent):
+        
+        """
+            Construye la tabla de préstamos activos.
+
+            Información mostrada:
+            - Cédula del usuario.
+            - Nombre del usuario.
+            - ISBN del libro.
+            - Título del libro.
+        """
         frame = tk.LabelFrame(
             parent, text="  📋  Préstamos Activos  ",
             font=FONTS["subtitle"],
@@ -235,6 +327,18 @@ class UsuariosView(tk.Frame):
     # ══════════════════════════════════════════════
 
     def _registrar_usuario(self):
+        
+        """
+            Obtiene los datos ingresados por el usuario
+            y solicita al servicio registrar un nuevo usuario.
+
+            Si la operación es exitosa:
+            - Limpia los campos.
+            - Actualiza la tabla de usuarios.
+
+            En caso contrario:
+            - Muestra un mensaje de error.
+        """
         cedula = self._u_entries["cedula"].get().strip()
         nombre = self._u_entries["nombre"].get().strip()
         email = self._u_entries["email"].get().strip()
@@ -249,6 +353,14 @@ class UsuariosView(tk.Frame):
             self._actualizar_tabla_usuarios()
 
     def _prestar(self):
+        
+        """
+            Gestiona el préstamo de un libro.
+
+            Obtiene la información ingresada,
+            solicita la operación al servicio y
+            actualiza las tablas correspondientes.
+        """
         cedula = self._p_entries["p_cedula"].get().strip()
         isbn = self._p_entries["p_isbn"].get().strip()
         ok, msg = self.service.prestar_libro(cedula, isbn)
@@ -259,6 +371,13 @@ class UsuariosView(tk.Frame):
             self._actualizar_tabla_usuarios()
 
     def _devolver(self):
+        
+        """
+            Gestiona la devolución de un libro.
+
+            Actualiza la disponibilidad del libro
+            y refresca la información visualizada.
+        """
         cedula = self._p_entries["p_cedula"].get().strip()
         isbn = self._p_entries["p_isbn"].get().strip()
         ok, msg = self.service.devolver_libro(cedula, isbn)
@@ -269,6 +388,11 @@ class UsuariosView(tk.Frame):
             self._actualizar_tabla_usuarios()
 
     def _actualizar_tabla_usuarios(self):
+        
+        """
+            Actualiza la información mostrada
+            en la tabla de usuarios registrados.
+        """
         for item in self._tree_usr.get_children():
             self._tree_usr.delete(item)
         for u in self.service.listar_usuarios():
@@ -277,6 +401,14 @@ class UsuariosView(tk.Frame):
             ))
 
     def _actualizar_tabla_prestamos(self):
+        
+        """
+            Actualiza la tabla de préstamos activos.
+
+            Consulta la información de usuarios y libros
+            para mostrar datos descriptivos junto con
+            cada préstamo registrado.
+        """
         for item in self._tree_pre.get_children():
             self._tree_pre.delete(item)
         for p in self.service.listar_prestamos():
@@ -289,6 +421,12 @@ class UsuariosView(tk.Frame):
             ))
 
     def refrescar(self):
-        """Llamado al navegar a esta vista."""
+        """
+            Método invocado por la aplicación principal
+            cuando el usuario navega hacia esta vista.
+
+            Garantiza que la información mostrada
+            se encuentre actualizada.
+        """
         self._actualizar_tabla_usuarios()
         self._actualizar_tabla_prestamos()

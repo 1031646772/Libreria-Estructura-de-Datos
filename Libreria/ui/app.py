@@ -9,9 +9,29 @@ from ui.views.usuarios_view import UsuariosView
 
 
 class App(tk.Tk):
-    """Ventana raíz de la aplicación."""
+    """
+        Ventana principal de la aplicación.
+
+        Esta clase actúa como contenedor principal de todas las vistas
+        del sistema de biblioteca y administra la navegación entre ellas.
+
+        Funcionalidades principales:
+        - Crear la ventana principal.
+        - Construir la barra lateral de navegación.
+        - Gestionar el cambio entre vistas.
+        - Mantener una única instancia de cada vista.
+        - Actualizar la información al navegar.
+    """
 
     def __init__(self, service):
+        """
+            Inicializa la aplicación principal.
+
+            Parámetros:
+                service: Servicio que proporciona acceso a la lógica
+                        de negocio y a los datos del sistema.
+        """  
+        
         super().__init__()
         self.service = service
         self.title("Sistema de Librería")
@@ -26,7 +46,19 @@ class App(tk.Tk):
     # ══════════════════════════════════════════════
 
     def _build(self):
+        
+        """
+            Construye la interfaz principal de la aplicación.
+
+            Componentes creados:
+            - Barra lateral de navegación.
+            - Área principal de contenido.
+            - Instancias de las diferentes vistas.
+            - Configuración de la vista inicial.
+        """
         # ── Sidebar ──────────────────────────────
+        # Panel lateral utilizado para la navegación
+        # entre las diferentes secciones del sistema.
         self._sidebar = tk.Frame(self, bg=COLORS["bg_panel"], width=180)
         self._sidebar.pack(side="left", fill="y")
         self._sidebar.pack_propagate(False)
@@ -93,6 +125,9 @@ class App(tk.Tk):
         self._content.pack(side="left", fill="both", expand=True)
 
         # ── Crear vistas ─────────────────────────
+        # Instanciación de todas las vistas del sistema.
+        # Se crean una sola vez y posteriormente se muestran
+        # u ocultan según la navegación del usuario.
         self._vistas = {
             "home":     HomeView(self._content, self.service),
             "libros":   LibrosView(self._content, self.service),
@@ -107,6 +142,19 @@ class App(tk.Tk):
     # ══════════════════════════════════════════════
 
     def _navegar(self, clave: str) -> None:
+        
+        """
+            Gestiona la navegación entre las diferentes vistas.
+
+            Parámetros:
+                clave (str): Identificador de la vista a mostrar.
+
+            Funciones realizadas:
+            - Oculta la vista actual.
+            - Actualiza el estilo de los botones de navegación.
+            - Muestra la nueva vista seleccionada.
+            - Refresca los datos si la vista lo requiere.
+        """
         # Ocultar vista actual
         if self._vista_activa:
             self._vistas[self._vista_activa].pack_forget()

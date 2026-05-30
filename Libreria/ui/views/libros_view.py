@@ -6,9 +6,28 @@ from ui.styles import COLORS, FONTS, PADDING
 
 
 class LibrosView(tk.Frame):
-    """Vista para registrar y listar libros."""
+    """
+        Vista encargada de la gestión de libros del sistema.
+
+        Funcionalidades principales:
+        - Registrar nuevos libros.
+        - Validar la información ingresada por el usuario.
+        - Mostrar el listado de libros registrados.
+        - Actualizar automáticamente la tabla cuando se agrega un libro.
+
+    """
 
     def __init__(self, parent, service, **kwargs):
+        
+        """
+            Inicializa la vista de libros.
+
+            Parámetros:
+                parent (tk.Widget): Contenedor padre.
+                service: Servicio encargado de la lógica de negocio.
+                **kwargs: Parámetros adicionales de Tkinter.
+        """
+        
         super().__init__(parent, bg=COLORS["bg_main"], **kwargs)
         self.service = service
         self._build()
@@ -18,11 +37,38 @@ class LibrosView(tk.Frame):
     # ══════════════════════════════════════════════
 
     def _build(self):
+        
+        """
+            Construye todos los componentes visuales de la vista.
+
+            Se divide en dos secciones principales:
+            - Formulario para registrar libros.
+            - Tabla para visualizar los libros almacenados.
+        """
         self._build_form()
         self._build_tabla()
 
     # ── Formulario ──────────────────────────────────
     def _build_form(self):
+        
+        """
+            Crea el formulario para el registro de libros.
+
+            El formulario contiene los siguientes campos:
+            - ISBN
+            - Título
+            - Autor
+            - Año de publicación
+            - Cantidad disponible
+
+            También incluye botones para:
+            - Registrar un libro.
+            - Limpiar los campos del formulario.
+
+            Finalmente muestra mensajes de estado para informar
+            al usuario sobre el resultado de las operaciones.
+        """
+        
         form_frame = tk.LabelFrame(
             self,
             text="  ➕  Ingresar Nuevo Libro  ",
@@ -116,6 +162,21 @@ class LibrosView(tk.Frame):
 
     # ── Tabla ────────────────────────────────────────
     def _build_tabla(self):
+        
+        """
+            Construye la tabla donde se muestran los libros registrados.
+
+            Utiliza el componente Treeview de ttk para presentar
+            la información en formato tabular.
+
+            Columnas mostradas:
+            - ISBN
+            - Título
+            - Autor
+            - Año
+            - Cantidad disponible
+            - Cantidad total
+        """
         lista_frame = tk.LabelFrame(
             self,
             text="  📋  Libros Registrados  ",
@@ -187,6 +248,19 @@ class LibrosView(tk.Frame):
     # ══════════════════════════════════════════════
 
     def _registrar_libro(self):
+        
+        """
+            Obtiene los datos ingresados en el formulario,
+            valida los campos numéricos y envía la información
+            al servicio para registrar el libro.
+
+            Si el registro es exitoso:
+            - Limpia el formulario.
+            - Actualiza la tabla de libros.
+
+            Si ocurre un error:
+            - Muestra un mensaje descriptivo al usuario.
+        """
         datos = {k: e.get().strip() for k, e in self._entries.items()}
 
         try:
@@ -205,6 +279,13 @@ class LibrosView(tk.Frame):
             self._actualizar_tabla()
 
     def _limpiar(self):
+        
+        """
+            Restablece los campos del formulario a sus
+            valores iniciales y elimina cualquier mensaje
+            de estado mostrado anteriormente.
+        """
+        
         for entry in self._entries.values():
             entry.delete(0, "end")
         self._entries["anio"].insert(0, "2024")
@@ -212,10 +293,31 @@ class LibrosView(tk.Frame):
         self._lbl_estado.config(text="")
 
     def _mostrar_estado(self, msg: str, error: bool = False):
+        
+        """
+            Muestra mensajes informativos al usuario.
+
+            Parámetros:
+                msg (str): Texto que se mostrará.
+                error (bool): Indica si el mensaje
+                            corresponde a un error.
+        """
         color = COLORS["accent_danger"] if error else COLORS["accent_success"]
         self._lbl_estado.config(text=msg, fg=color)
 
     def _actualizar_tabla(self):
+        
+        """
+            Actualiza el contenido de la tabla de libros.
+
+            Primero elimina todos los registros existentes
+            y posteriormente consulta nuevamente la lista
+            de libros desde el servicio.
+
+            Los libros sin ejemplares disponibles son
+            resaltados con un color de advertencia para
+            facilitar su identificación.
+        """
         for item in self._tree.get_children():
             self._tree.delete(item)
         for libro in self.service.listar_libros():

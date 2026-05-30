@@ -5,17 +5,53 @@ from ui.styles import COLORS, FONTS, PADDING
 
 
 class HomeView(tk.Frame):
-    """Pantalla de bienvenida con estadísticas rápidas."""
+    """
+    
+        Vista principal o pantalla de inicio del sistema de librería.
+
+        Esta interfaz muestra información general del sistema mediante
+        tarjetas de estadísticas, incluyendo:
+        - Cantidad de libros registrados.
+        - Cantidad de usuarios registrados.
+        - Cantidad de préstamos activos.
+
+        Además, muestra un mensaje de bienvenida y una guía rápida
+        para la navegación del usuario.
+    
+    """
 
     def __init__(self, parent, service, **kwargs):
+        
+        """
+            Constructor de la vista principal.
+
+            Parámetros:
+                parent (tk.Widget): Contenedor padre donde se mostrará la vista.
+                service: Servicio que proporciona acceso a los datos
+                        de libros, usuarios y préstamos.
+                **kwargs: Parámetros adicionales de Tkinter.
+        """
+        
         super().__init__(parent, bg=COLORS["bg_main"], **kwargs)
         self.service = service
         self._build()
 
     def _build(self):
-        # ── Encabezado ──────────────────────────────
+        
+        """
+        Construye la interfaz gráfica de la pantalla principal.
+
+        Se encarga de crear:
+        - Encabezado de bienvenida.
+        - Tarjetas de estadísticas.
+        - Mensaje informativo para el usuario.
+        """
+        
+        # Encabezado principal
         header = tk.Frame(self, bg=COLORS["bg_panel"], pady=32)
         header.pack(fill="x")
+        
+        # Título principal del sistema
 
         tk.Label(
             header,
@@ -24,6 +60,8 @@ class HomeView(tk.Frame):
             bg=COLORS["bg_panel"],
             fg=COLORS["accent"],
         ).pack()
+        
+        # Descripción breve del sistema
 
         tk.Label(
             header,
@@ -45,6 +83,8 @@ class HomeView(tk.Frame):
                         len(self.service.listar_prestamos()), COLORS["accent_warn"])
 
         # ── Tip ─────────────────────────────────────
+        # Mensaje informativo
+        
         tip = tk.Frame(self, bg=COLORS["bg_card"], pady=16, padx=24)
         tip.pack(fill="x", padx=PADDING["section"], pady=(0, 20))
 
@@ -58,6 +98,18 @@ class HomeView(tk.Frame):
         ).pack(anchor="w")
 
     def _stat_card(self, parent, icon, label, value, color):
+        
+        """
+            Crea una tarjeta de estadística para mostrar información resumida.
+
+            Parámetros:
+                parent (tk.Widget): Contenedor donde se agregará la tarjeta.
+                icon (str): Icono representativo de la estadística.
+                label (str): Texto descriptivo de la estadística.
+                value (int): Valor numérico a mostrar.
+                color (str): Color utilizado para destacar la información.
+        """
+        
         card = tk.Frame(
             parent,
             bg=COLORS["bg_card"],
