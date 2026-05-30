@@ -1,5 +1,4 @@
 # core/libro.py
-print("funcionando rama")
 
 class Libro:
     """Modelo de dominio para un libro."""
