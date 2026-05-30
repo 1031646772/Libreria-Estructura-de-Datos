@@ -1,10 +1,11 @@
 # core/libreria_service.py
-# Capa de lógica de negocio.  La UI solo llama a estas funciones.
+# Se importan los modelos o listas 
 
 from core.lista_lineal import ListaLineal
 from core.libro import Libro
 from core.usuario import Usuario
 
+#Se Define la clase LibreriaService la cual se encargara de almacenar nuestras funciones para darles uso en 
 
 class LibreriaService:
     """

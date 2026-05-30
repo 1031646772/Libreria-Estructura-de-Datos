@@ -1,7 +1,7 @@
 # core/libro.py
 
 class Libro:
-    """Modelo de dominio para un libro."""
+    #Se define el contructor de Libro para ingresar sus atributos
 
     def __init__(self, isbn: str, titulo: str, autor: str, anio: int, cantidad: int = 1):
         self.isbn = isbn.strip()
@@ -11,9 +11,9 @@ class Libro:
         self.cantidad = int(cantidad)          # ejemplares totales
         self.disponibles = int(cantidad)       # ejemplares disponibles
 
-    # ──────────────────────────────────────────────
+   
     # Préstamo
-    # ──────────────────────────────────────────────
+    # ──────────────────────────────────────────
     def prestar(self) -> bool:
         """Descuenta un ejemplar disponible. Retorna True si se pudo prestar."""
         if self.disponibles > 0:
